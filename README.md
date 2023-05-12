@@ -211,5 +211,29 @@ Props:
 - 상위 컴포넌트의 props을 변경하면 업데이트된 props으로 하위 컴포넌트가 다시 렌더링된다.
 - props는 데이터를 전달하고 컴포넌트 간에 통신하는 방법을 제공하여 컴포넌트 구성 및 재사용을 가능하게 한다.
 
-요약하면 state는 *컴포넌트 내에서 변경 가능한 내부 데이터를 관리하는 데 사용*되는 반면 props는 *부모 컴포넌트에서 자식 컴포넌트로 데이터를 전달하는 데 사용*된다. 
+요약하면 state는 *컴포넌트 내에서 변경 가능한 내부 데이터를 관리하는 데 사용*되는 반면 props는 *부모 컴포넌트에서 자식 컴포넌트로 데이터를 전달하는 데 사용*된다.<br />
 state는 컴포넌트 자체가 소유하고 제어하는 ​​반면 props은 읽기 전용(readonly)이며 부모 컴포넌트에서 자식 컴포넌트로 전달된다.
+
+### 7. State Update
+state를 직접 업데이트하려 시도한다면, 리렌더링이 발생하지 않는다.
+
+```javascript
+this.state.message = "Hello world";
+```
+
+직접 업데이트 하는 대신 `setState()` 메서드를 사용해 state를 업데이트해야한다.
+`setState()` 메서드는 state 객체의 업데이트를 예약(scheduling)한다. 
+
+```javascript
+this.setState({ message: "Hello World" });
+```
+
+클래스 컴포넌트에서 사용하는 `setState()` 메서드의 두 번째 인자로 콜백 함수를 넘겨줄 수 있다.
+콜백 함수는 setState가 완료되고 컴포넌트가 렌더링될 때 호출된다.
+
+> Note:
+>
+> 하지만 이런 식으로 `setState()` 함수의 콜백 함수를 넘겨주는 것보다 라이프사이클 메서드를 사용하는 것이 낫다.
+> ```javascript
+>   setState({ name: "John" }, () =>  console.log("The name has updated and component re-rendered"));
+> ```
