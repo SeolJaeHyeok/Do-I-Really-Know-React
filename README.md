@@ -84,3 +84,56 @@ const Button = ({ handleLogin }) =>
   );
 ```
 
+### 3. 순수 컴포넌트가 무엇인가?
+
+순수 컴포넌트는 동일한 state와 props에 대해 항상 동일한 출력을 렌더링하는 컴포넌트를 말한다. 
+함수 컴포넌트에서는 `React.memo()` 를 통해 순수 컴포넌트를 만들 수 있다. `React.memo()` API는 이전 props와 새로운 props를 얕은 비교를 통해 비교하여 불필요한 리렌더링을 방지한다.
+
+하지만 함수 컴포넌트 자체에서 동일한 상태를 다시 설정할 때 기본적으로 불필요한 렌더링을 방지하기 때문에 이전 상태와 현재 상태를 비교하지 않는다.
+
+Memoized 된 컴포넌트는 아래와 같이 표현된다.
+
+```javascript
+const MemoizedComponent = memo(SomeComponent, arePropsEqual?);
+```
+
+아래는 `React.memo()` API를 통해 하위 컴포넌트의 불필요한 렌더링을 방지하는 예시다.
+
+```javascript
+import { memo, useState } from 'react';
+
+  const EmployeeProfile = memo(function EmployeeProfile({ name, email }) {
+    return (<>
+          <p>Name:{name}</p>
+          <p>Email: {email}</p>
+          </>);
+  });
+  export default function EmployeeRegForm() {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    return (
+      <>
+        <label>
+          Name: <input value={name} onChange={e => setName(e.target.value)} />
+        </label>
+        <label>
+          Email: <input value={email} onChange={e => setEmail(e.target.value)} />
+        </label>
+        <hr/>
+        <EmployeeProfile name={name}/>
+      </>
+    );
+  }
+```
+
+위 코드에서는 이메일 props가 하위 컴포넌트로 전달되지 않았다. 따라서 이메일 props 변경에 대한 리렌더링이 발생하지 않는다.
+
+클래스 컴포넌트에서는 React.Component 대신 React.PureComponent를 확장하는 컴포넌트가 순수 컴포넌트가 된다. 
+props나 state가 변경되면 PureComponent는 shouldComponentUpdate() 수명 주기가 충족되면 props나 state 모두에 대해 얕은 비교를 수행한다.
+
+> Note: 
+> 1. `React.memo()` 는 HOC이다.
+> 2. `shouldComponentUpdate` 라이프사이클 메서드를 통해 임의의 조건을 설정해 리렌더링을 방지할 수 있다.
+> 3.  `shouldComponentUpdate` 가 반환하는 기본값은 `true`다. 따라서 이 메서드 안에서 로직을 통해 `true` 나 `false`를 반환하면 개발자가 지정한 조건 하에 리렌더링을 발생시킬 수 있다. 
+
+
