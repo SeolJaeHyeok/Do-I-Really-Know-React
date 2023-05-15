@@ -237,3 +237,29 @@ this.setState({ message: "Hello World" });
 > ```javascript
 >   setState({ name: "John" }, () =>  console.log("The name has updated and component re-rendered"));
 > ```
+
+### 8. HTML과 React 사이의 이벤트를 다루는 방법의 차이
+
+HTML과 React 이벤트 핸들링의 주된 차이는 아래와 같다.
+
+1. HTML에서 이벤트는 `lowercase` 컨벤션을 따른다. 반면, React에서는 `camelCase` 컨벤션을 따른다.
+   ```javascript
+      // HTML
+      <button onclick="clickEvent()">Click</button>
+
+      // React
+      <button onClick={clickEvent}>Click</button>
+   ```
+2. HTML에서 이벤트의 기본 동작을 막기 위해 `false` 를 반환할 수 있다. 반면, React에서는 반드시 `preventDefault()` 함수를 명시적으로 호출해야 한다.
+   ```javascript
+    // HTML
+    <a href="#" onclick="clickEvent(); return false;">Move</a>
+
+    // React
+    function clickEvent(event) {
+      event.preventDefault();
+      console.log('Click');
+    }
+   ```
+3. HTML에서는 함수 이름 앞에 `()`를 붙여 함수를 호출해야 하지만, React에서는 붙이면 안된다.
+
