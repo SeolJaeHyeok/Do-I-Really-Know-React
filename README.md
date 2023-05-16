@@ -263,3 +263,75 @@ HTML과 React 이벤트 핸들링의 주된 차이는 아래와 같다.
    ```
 3. HTML에서는 함수 이름 앞에 `()`를 붙여 함수를 호출해야 하지만, React에서는 붙이면 안된다.
 
+### 9. JSX 콜백에서 메서드 또는 이벤트 핸들러를 바인딩하는 방법
+
+클래스 컴포넌트에서는 3가지의 방법이 존재한다.
+
+1. Binding in Constructor: 자바스크립트 클래스에서 메서드는 기본적으로 바인딩되지 않는다. 클래스 메서드로 선언된 React 이벤트 핸들러 또한 동일한 규칙이 적용된다. 일반적으로 바인딩을 생성자에서 이루어진다.
+   ```javascript
+   class User extends Component {
+     constructor(props) {
+       super(props);
+       this.handleClick = this.handleClick.bind(this);
+     }
+     handleClick() {
+       console.log("SingOut triggered");
+     }
+     render() {
+       return <button onClick={this.handleClick}>SingOut</button>;
+     }
+   }
+   ```
+2. Public class fields syntax: Bind 메서드를 사용하고 싶지 않다면 *public class fields syntax*를 사용하여 콜백을 올바르게 바인딩할 수 있다.
+   ```javascript
+   handleClick = () => {
+     console.log("SingOut triggered", this);
+   };
+
+   <button onClick={this.handleClick}>SingOut</button>
+   ```
+3. Arrow functions in callbacks: 콜백 함수 안에 직접 화살표 함수를 사용하는 것도 가능하다.
+   ```javascript
+   handleClick() {
+       console.log('SingOut triggered');
+   }
+   render() {
+       return <button onClick={() => this.handleClick()}>SignOut</button>;
+   }
+   ```
+
+### 10. React의 synthetic events
+
+Synthetic Event는 브라우저의 Native Event를 감싼 크로스 브라우저 래퍼다. 이 이벤트는 모든 브라우저에서 동일하게 작동한다는 점을 제외하면 stopPropagation() 및 preventDefault() 등 브라우저의 네이티브 이벤트와 동일한 인터페이스를 가지고 있다.
+
+어떤 이유로 기본 브라우저 이벤트가 필요한 경우 nativeEvent 속성을 사용하여 해당 이벤트를 가져오면 된다. 합성 이벤트는 브라우저의 기본 이벤트와 다르며 직접 매핑되지 않는다.
+
+합성 이벤트 객체에는 이벤트 유형(event type), 대상 요소(target element), 이벤트 좌표(event coordinate)와 같은 네이티브 이벤트 객체와 동일한 프로퍼티와 메서드가 포함되어 있다. 하지만 일관된 동작을 보장하고 automatic event pooling과 같은 추가 기능을 제공하여 성능을 향상시킨다.
+
+SyntheticEvent의 중요한 특징 중 하나는 풀링된 객체라는 점이다. 즉, 이벤트 핸들러가 실행을 완료한 후 SyntheticEvent 객체가 재사용되고 해당 프로퍼티가 무효화된다. 이 풀링은 각 이벤트에 대해 새 객체를 생성하지 않도록 하여 메모리 사용량을 줄이고 성능을 개선하는 데 도움이 된다.
+
+```javascript
+// No Pooling
+function handleChange(e) {
+  // This won't work because the event object gets reused.
+  setTimeout(() => {
+    console.log(e.target.value); // Too late!
+  }, 100);
+}
+
+// Pooling
+function handleChange(e) {
+  // Prevents React from resetting its properties:
+  e.persist();
+
+  setTimeout(() => {
+    console.log(e.target.value); // Works
+  }, 100);
+}
+```
+
+> Note
+>
+> React가 예전 브라우저에서 성능을 위해 서로 다른 이벤트 사이에 이벤트 객체를 재사용하고, 그 사이에 모든 이벤트 필드를 null로 설정했었다. React 16 이하에서는 이벤트를 제대로 사용하려면 e.persist()를 호출하거나 필요한 프로퍼티를 먼저 읽어야만 했다.
+> 
+> 하지만 React 17버전에서는 Pooling이 모던 브라우저에서 성능 개선을 하지 못한다고 판단하여 event pooling이 제거됐다. 따라서 React 17 이후에는 `e.persist()` 가 아무런 동작도 하지 않는다.
