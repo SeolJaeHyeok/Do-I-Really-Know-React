@@ -368,14 +368,26 @@ ref는 요소에 대한 참조를 반환하는 데 사용된다. 대부분의 �
 Ref forwarding(참조 전달)은 컴포넌트가 받은 ref를 가져와 하위 컴포넌트로 전달할 수 있는 기능이다.
 `forwardRef` 로 감싼 컴포넌트는 두 번째 매개 변수를 갖게 되는데, 이를 통해 ref를 전달받을 수 있다.
 
-```javascript
-// 두 번째 매개 변수로 ref를 받아올 수 있다.
-const ButtonElement = React.forwardRef((props, ref) => (
-  <button ref={ref} className="CustomButton">
-    {props.children}
-  </button>
-));
 
-const ref = React.createRef();
-<ButtonElement ref={ref}>{"Forward Ref"}</ButtonElement>;
+```javascript
+import React, { forwardRef, useRef } from "react";
+
+const Input = forwardRef((props, ref) => {
+  return <input type="text" ref={ref} />;
+});
+
+function Field() {
+  const inputRef = useRef(null);
+
+  function handleFocus() {
+    inputRef.current.focus();
+  }
+
+  return (
+    <>
+      <Input ref={inputRef} />
+      <button onClick={handleFocus}>입력란 포커스</button>
+    </>
+  );
+}
 ```
