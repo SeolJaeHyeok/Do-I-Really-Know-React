@@ -391,3 +391,158 @@ function Field() {
   );
 }
 ```
+
+### 14. Virtual DOM은 어떻게 동작하는가?
+Virtual DOM은 세 가지의 간단한 과정으로 동작한다.
+
+1. 데이터가 변경될 때마다 전체 UI가 가상 DOM 표현으로 다시 렌더링된다.
+2. 그 후, 이전 DOM과 새로운 DOM의 차이를 계산한다.(reconciliation)
+3. 계산이 완료되면 실제 DOM에는 변경된 내용만 업데이트된다.
+
+> *Virtual DOM이라는 용어에 대한 Dan Abramov의 입장*
+> 
+> 저는 우리가 "가상 DOM"이라는 용어를 폐기할 수 있길 바랍니다.
+>  
+> 2013년에는 지금과 달리 이렇게 이야기 하지 않으면 사람들은 리액트가 모든 렌더에서 DOM 노드를 생성한다고 생각했기 때문에 의미가 있었습니다. 
+> 
+> 그러나 오늘날 사람들은 이런 가정을 거의 하지 않습니다. "가상 DOM"은 일부 DOM 문제에 대한 해결 방법처럼 들리지만 리액트는 그런 것이 아닙니다.
+>
+> 리액트는 "값 UI"입니다. 그것의 핵심 원칙은 UI가 문자열이나 배열과 마찬가지로 값이라는 것입니다. 변수에 저장하고, 전달하고, 자바스크립트 제어 흐름에서 사용할 수 있습니다. 그 표현가능함이 요점입니다. DOM에 변경 사항을 적용하는 것을 피하기 위한 비교 같은 것이 아닙니다.
+>
+> 항상 DOM을 나타내는 것도 아닙니다. 예를 들어 `<Message recipientId={10} />`는 DOM이 아닙니다. 개념적으로 이는 지연 함수 호출 `Message.bind(null, { recipientId: 10 })`를 나타냅니다.
+
+
+리액트는 기존 컴포넌트 트리와 DOM 구조를 가능한 많이 재활용하여 효율적인 리렌더링을 위해 재조정(Reconciliation) 과정을 거친다.
+
+- **재조정(Reconciliation)이란?**
+    
+    
+    만약 `ReactDOM.render()` 가 같은 컨테이너에서 두 번 호출된다면 어떻게 될까?
+    
+    ```jsx
+    ReactDOM.render(
+      <button className="blue" />,
+      document.getElementById('container')
+    );
+    
+    // ... 나중에 ...
+    
+    // 호스트 객체를 교체해야 할까
+    // 아니면 기존 객체에 속성만 교체하면 될까?
+    ReactDOM.render(
+      <button className="red" />,
+      document.getElementById('container')
+    );
+    ```
+    
+    - React의 목표는 주어진 **React 엘리먼트 트리와 호스트 트리를 일치시키는 것**이다.
+        
+        새로운 정보를 가지고 **호스트 객체 트리에 어떤 작업을 해야 하는지를 파악하는 과정**이 조정(****Reconciliation)****이라고 한다.
+        
+    - 여기에는 두 가지 방법이 존재한다.
+        - 기존 정보를 날리고 새로운 트리를 생성
+            
+            ```jsx
+            let domContainer = document.getElementById('container');
+            // 트리를 날린다.
+            domContainer.innerHTML = '';
+            // 새로운 객체 트리를 만든다.
+            let domNode = document.createElement('button');
+            domNode.className = 'red';
+            domContainer.appendChild(domNode);
+            ```
+            
+            위 방법의 단점은 느리고 포커스, 선택, 스크롤 정보 등 중요한 정보를 잃게 된다. 대신 아래와 같이 우리가 원하는 방향으로 작업할 수도 있다.
+            
+            ```jsx
+            let domNode = domContainer.firstChild;
+            // 기존 호스트 객체를 변경한다.
+            domNode.className = 'red';
+            ```
+            
+            같은 위치에 같은 호스트 객체를 다시 렌더링 하는 것이기 때문에 다시 만들 필요 없이 재사용하면 된다.
+            
+        - **트리의 같은 위치에 있는 엘리먼트 타입이 이전 렌더링과 다음 렌더링 사이에 일치하면 React는 기존 호스트 객체를 다시 사용한다.**
+            
+            ```jsx
+            // let domNode = document.createElement('button');
+            // domNode.className = 'blue';
+            // domContainer.appendChild(domNode);
+
+            ReactDOM.render(
+              <button className="blue" />,
+              document.getElementById('container')
+            );
+            
+            // 호스트 객체를 다시 사용할 수 있을까? 네! (button → button)
+            // domNode.className = 'red';
+
+            ReactDOM.render(
+              <button className="red" />,
+              document.getElementById('container')
+            );
+            
+            // 호스트 객체를 다시 사용할 수 있을까? 아뇨! (button → p)
+            // domContainer.removeChild(domNode);
+            // domNode = document.createElement('p');
+            // domNode.textContent = 'Hello';
+            // domContainer.appendChild(domNode);
+
+            ReactDOM.render(
+              <p>Hello</p>,
+              document.getElementById('container')
+            );
+            
+            // 호스트 객체를 다시 사용할 수 있을까? 네! (p → p)
+            // domNode.textContent = 'Goodbye';
+            ReactDOM.render(
+              <p>Goodbye</p>,
+              document.getElementById('container')
+            );
+            ```
+            
+    
+    ### 조건(Conditions)
+    
+    - 매 갱신마다 엘리먼트의 타입이 일치할 때만 호스트 객체를 재활용한다면 조건부 렌더링의 경우는 어떻게 동작할까?
+        
+        ```jsx
+        // 첫 렌더링
+        ReactDOM.render(
+          <dialog>
+            <input />
+          </dialog>,
+          domContainer
+        );
+        
+        // 두 번째 렌더링
+        ReactDOM.render(
+          <dialog>
+            <p>I was just added here!</p>
+            <input />
+          </dialog>,
+          domContainer
+        );
+        ```
+        
+    - 위 예제에서 `input` 호스트 객체는 재생성될 것이다. 이미 존재하는 `input` 호스트 객체를 재활용하지 않고 재생성하는 과정은 아래와 같다.
+        - `dialog → dialog`: 호스트 객체를 다시 사용할 수 있나요? **네, 타입이 일치합니다.**
+        - `input → p`: 호스트 객체를 다시 사용할 수 있나요? **아뇨, 타입이 다릅니다.**
+        - `input`을 삭제하고 `p`를 추가해야 합니다.
+        - `(없음) → input`: 새로운 `input` 호스트 객체를 만들어야 합니다.
+    - 따라서 React가 실행하는 코드는 다음과 같다.
+        
+        ```jsx
+        let oldInputNode = dialogNode.firstChild;
+        dialogNode.removeChild(oldInputNode);
+        
+        let pNode = document.createElement('p');
+        pNode.textContent = 'I was just added here!';
+        dialogNode.appendChild(pNode);
+        
+        let newInputNode = document.createElement('input');
+        dialogNode.appendChild(newInputNode);
+        ```
+        
+    - 새로 생성하게 되면 선택, 포커스, 내용을 잃기 때문에 재생성은 불필요한 과정이 된다.
+
