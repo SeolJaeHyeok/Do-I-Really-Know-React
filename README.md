@@ -546,3 +546,57 @@ Virtual DOM은 세 가지의 간단한 과정으로 동작한다.
         
     - 새로 생성하게 되면 선택, 포커스, 내용을 잃기 때문에 재생성은 불필요한 과정이 된다.
 
+### 15. Fiber 객체는 무엇인가?
+Fiber 객체는 React 16에 처음 적용된 새로운 재조정 엔진이다. React Fiber는 애니메이션, 레이아웃, 제스처, 작업 일시정지, 중단, 재사용 기능 등 다양한 유형의 업데이트에 우선순위를 할당하고 새로운 concurrency primitives와 같은 영역에 대한 적합성을 높이는 것을 목표로 한다.
+
+대표적인 기능은 증분 렌더링(incremental rendering)으로, 렌더링 작업을 청크로 분할아여 여러 프레임에 걸쳐 분산할 수 있는 기능이다.
+
+Fiber 객체의 주된 목표는 아래와 같다.
+
+1. 중단 가능한 작업을 청크로 분할하는 기능
+2. 진행 중인 작업의 우선순위를 정하고, rebase하고 reuse할 수 있는 기능
+3. React에서 레이아웃을 지원하기 위해 부모와 자식 간에 양보할 수 있는 기능
+4. `render()`에서 여러 요소를 반환하는 기능
+5. Error boundaries에 대한 더 나은 지원
+
+
+> ### concurrency primitives
+> 동시성 프리미티브(concurrency primitives)는 동시 스레드 또는 프로세스 간에 동기화 및 조정을 제공하는 프로그래밍 구조 또는 메커니즘이다.
+>
+> 이러한 프리미티브는 공유 리소스를 관리하고 동시 프로그램에서 정확하고 예측 가능한 동작을 보장하는 데 필수적이다.
+
+Fiber 객체 타입을 간단히 나타내면 다음과 같다.
+```javascript
+export type Fiber = {
+  // 파이버 타입을 식별하기 위한 태그
+  tag: WorkTag;
+
+  // 해당 요소의 고유 식별자
+  key: null | string;
+
+  // 파이버와 관련된 것으로 확인된 함수/클래스
+  type: any;
+
+  // 단일 연결 리스트 트리 구조
+  child: Fiber | null;
+  sibling: Fiber | null;
+  index: number;
+
+  // 파이버로 입력되는 데이터 (arguments/props)
+  pendingProps: any;
+  memoizedProps: any; // 출력을 만드는데 사용되는 props입니다.
+
+  // 상태 업데이트 및 콜백 큐
+  updateQueue: Array<State | StateUpdaters>;
+
+  // 출력을 만드는데 사용되는 상태
+  memoizedState: any;
+
+  // 파이버에 대한 종속성(컨텍스트, 이벤트)(존재하는 경우)
+  dependencies: Dependencies | null;
+};
+```
+
+렌더링 패스 동안 React는 이 Fiber 객체 트리를 순회하고 새 렌더링 결과를 계산할 때 업데이트된 트리를 구성한다. 
+
+중요한 점은 Fiber 객체는 실제 컴포넌트의 props와 state 값을 저장한다는 것이다. 다시 말해, 컴포넌트에서 props와 state를 사용할 때 **React는 Fiber 객체에 저장된 값에 대한 접근을 제공한다**는 것이다.
