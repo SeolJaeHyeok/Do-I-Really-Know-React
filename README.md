@@ -601,7 +601,7 @@ export type Fiber = {
 
 중요한 점은 Fiber 객체는 실제 컴포넌트의 props와 state 값을 저장한다는 것이다. 다시 말해, 컴포넌트에서 props와 state를 사용할 때 **React는 Fiber 객체에 저장된 값에 대한 접근을 제공한다**는 것이다.
 
-### 16. controlled component and uncontrolled component
+### 16. controlled component and uncontrolled component - [examples](https://github.com/SeolJaeHyeok/dirkr-examples/tree/main/app/controlled-uncontrolled)
 제어 컴포넌트(controlled component)는 프로퍼티를 통해 현재 값과 업데이트 콜백 함수를 전달 받고, 부모 컴포넌트는 컴포넌트의 상태를 관리한다. 사용자가 컴포넌트와 상호작용하면 부모 컴포넌트가 상태를 업데이트하고, 이는 다시 컴포넌트의 값을 업데이트한다.
 
 비제어 컴포넌트(uncontrolled component)는 자체 내부 상태를 유지하며, 사용자가 컴포넌트와 상호작용하면 자체 상태를 업데이트하고, 이는 다시 컴포넌트의 값을 업데이트 한다.
