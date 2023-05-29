@@ -520,6 +520,7 @@ Virtual DOM은 세 가지의 간단한 과정으로 동작한다.
   ### 조건(Conditions)
 
   - 매 갱신마다 엘리먼트의 타입이 일치할 때만 호스트 객체를 재활용한다면 조건부 렌더링의 경우는 어떻게 동작할까?
+
     ```jsx
     // 첫 렌더링
     ReactDOM.render(
@@ -538,12 +539,14 @@ Virtual DOM은 세 가지의 간단한 과정으로 동작한다.
       domContainer
     );
     ```
+
   - 위 예제에서 `input` 호스트 객체는 재생성될 것이다. 이미 존재하는 `input` 호스트 객체를 재활용하지 않고 재생성하는 과정은 아래와 같다.
     - `dialog → dialog`: 호스트 객체를 다시 사용할 수 있나요? **네, 타입이 일치합니다.**
     - `input → p`: 호스트 객체를 다시 사용할 수 있나요? **아뇨, 타입이 다릅니다.**
     - `input`을 삭제하고 `p`를 추가해야 합니다.
     - `(없음) → input`: 새로운 `input` 호스트 객체를 만들어야 합니다.
   - 따라서 React가 실행하는 코드는 다음과 같다.
+
     ```jsx
     let oldInputNode = dialogNode.firstChild;
     dialogNode.removeChild(oldInputNode);
@@ -555,6 +558,7 @@ Virtual DOM은 세 가지의 간단한 과정으로 동작한다.
     let newInputNode = document.createElement("input");
     dialogNode.appendChild(newInputNode);
     ```
+
   - 새로 생성하게 되면 선택, 포커스, 내용을 잃기 때문에 재생성은 불필요한 과정이 된다.
 
 ### 15. Fiber 객체는 무엇인가?
@@ -639,3 +643,39 @@ React.createElement(type, [props], [...children]);
 ```javascript
 React.cloneElement(element, [props], [...children]);
 ```
+
+### 18. Component Lifecycle이란?
+
+컴포넌트의 생명 주기에는 세 가지의 생명 주기 단계가 있다.
+
+1. Mounting: 컴포넌트를 브라우저 DOM에 마운트할 준비가 된 단계다. 이 단계에서는 `constructor()`, `getDerivedStateFromProps()`, `render()` 및 `componentDidMount()` lifecycle method에서 초기화를 다룬다.
+
+2. Updating: 이 단계에서는 컴포넌트를 업데이트하는 두 가지 방법이 있는데, 새 프로퍼티를 전송하고 `setState()` 또는 `forceUpdate()`를 통해 상태를 업데이트하는 것다. 이 단계에서는 `getDerivedStateFromProps()`, `shouldComponentUpdate()`, `render()`, `getSnapshotBeforeUpdate()` 및 `componentDidUpdate()` lifecycle method가 다뤄진다.
+
+3. Unmounting: 이 마지막 단계에서는 컴포넌트가 더 이상 필요하지 않으며 브라우저 DOM에서 마운트 해제된다. 이 단계에는 `componentWillUnmount()` 수명 주기 메서드가 포함된다.
+
+한 가지 주목할 점은 React 내부적으로 DOM에 **변경 사항을 적용할 때 단계**라는 개념이 있다는 것이다. 이는 다음과 같이 구분된다.
+
+1. Render : 컴포넌트가 Side Effects 없이 렌더링된다. 이는 Pure 컴포넌트에 적용되며, 이 단계에서 React는 렌더링을 일시 중지, 중단 또는 다시 시작할 수 있다.
+
+2. Pre Commit : 컴포넌트가 실제로 DOM에 변경 사항을 적용하기 전에 React가 `getSnapshotBeforeUpdate()`를 통해 DOM에서 읽을 수 있는 순간이 있다.
+
+3. Commit : React는 DOM과 함께 작동하며 마운팅을 위해 `componentDidMount()`, 업데이트를 위해 `componentDidUpdate()`, 마운트 해제를 위해 `componentWillUnmount()`를 각각 최종 실행한다.
+
+### React 16.3+ Lifecycle methods
+
+**getDerivedStateFromProps**: render()를 호출하기 직전에 호출되며 모든 렌더링에서 호출된다.
+
+**componentDidMount**: 첫 번째 렌더링 후 실행되며 모든 AJAX 요청, DOM 또는 상태 업데이트, 이벤트 리스너 설정이 발생해야 하는 곳에서 실행된다.
+
+**shouldComponentUpdate**: 컴포넌트를 업데이트할지 여부를 결정한다. 기본적으로 true를 반환한다. 상태나 프로퍼티가 업데이트된 후 컴포넌트를 렌더링할 필요가 없다고 확신하는 경우 거짓 값을 반환할 수 있다. 컴포넌트가 새로운 prop을 수신할 경우 다시 렌더링하는 것을 방지할 수 있으므로 성능을 향상시킬 수 있다.
+
+**getSnapshotBeforeUpdate**: 렌더링된 출력이 DOM에 커밋되기 직전에 실행돤다. 이 함수가 반환하는 모든 값은 componentDidUpdate()로 전달된다. 이 함수는 스크롤 위치 등 DOM에서 정보를 캡처하는 데 유용하다.
+
+**componentDidUpdate**: 주로 prop이나 state 변경에 대한 응답으로 DOM을 업데이트하는 데 사용된다. shouldComponentUpdate()가 false를 반환하면 실행되지 않는다.
+
+**componentWillUnmount**: 나가는 네트워크 요청을 취소하거나 컴포넌트와 연관된 모든 이벤트 리스너를 제거하는 데 사용된다.
+
+#### 16.3 이상 버전 - [diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
+
+<img src="https://github.com/sudheerj/reactjs-interview-questions/raw/master/images/phases16.4.png">
