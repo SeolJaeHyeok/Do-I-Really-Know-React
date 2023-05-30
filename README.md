@@ -680,7 +680,7 @@ React.cloneElement(element, [props], [...children]);
 
 <img src="https://github.com/sudheerj/reactjs-interview-questions/raw/master/images/phases16.4.png">
 
-### 19. HOC(Higher Order Component)
+### 19. HOC(Higher Order Component) - [Examples](https://github.com/SeolJaeHyeok/dirkr-examples/tree/main/app/HOC)
 고차 컴포넌트는 컴포넌트를 인자로 받아 새로운 컴포넌트를 반환하는 함수다. 기본적으로 React의 컴포지션 특성에서 파생된 패턴이다.
 
 HOC의 주요 목적은 코드 재사용, 관심사 분리를 가능하게 하고 여러 컴포넌트 간에 공통 기능을 공유할 수 있는 방법을 제공하는 것이다. 이를 통해 새로운 프로퍼티를 추가하거나 컴포넌트의 생명 주기를 조작하거나 다른 컴포넌트로 래핑하여 컴포넌트의 동작을 확장하거나 수정할 수 있다.
