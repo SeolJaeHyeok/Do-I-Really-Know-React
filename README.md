@@ -679,3 +679,15 @@ React.cloneElement(element, [props], [...children]);
 #### 16.3 이상 버전 - [diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
 
 <img src="https://github.com/sudheerj/reactjs-interview-questions/raw/master/images/phases16.4.png">
+
+### 19. HOC(Higher Order Component)
+고차 컴포넌트는 컴포넌트를 인자로 받아 새로운 컴포넌트를 반환하는 함수다. 기본적으로 React의 컴포지션 특성에서 파생된 패턴이다.
+
+HOC의 주요 목적은 코드 재사용, 관심사 분리를 가능하게 하고 여러 컴포넌트 간에 공통 기능을 공유할 수 있는 방법을 제공하는 것이다. 이를 통해 새로운 프로퍼티를 추가하거나 컴포넌트의 생명 주기를 조작하거나 다른 컴포넌트로 래핑하여 컴포넌트의 동작을 확장하거나 수정할 수 있다.
+
+HOC는 다음과 같은 다양한 상황에서 유용하다.
+
+1. 코드 재사용성: HOC는 다른 컴포넌트에 적용할 수 있는 특정 논리 또는 기능을 캡슐화한다. 이렇게 하면 코드 재사용이 촉진되고 여러 컴포넌트에서 유사한 코드가 복제되는 것을 방지할 수 있다.
+2. 교차 절단 문제(Cross-Cutting Concerns): HOC는 인증, 로깅, 캐싱 또는 데이터 가져오기와 같은 교차 절단 문제를 처리하는 데 유용하다. 이를 통해 이러한 문제를 기본 컴포넌트 논리에서 분리하고 이러한 기능을 컴포넌트에 추가하는 재사용 가능한 방법을 제공할 수 있다.
+3. Composition: HOC는 여러 HOC로 컴포넌트를 래핑하여 여러 동작 또는 기능을 함께 구성하는 데 사용할 수 있다. 이는 필요에 따라 다양한 기능을 결합할 수 있는 유연성을 제공한다.
+4. 프로퍼티 조작(Props Manipulation): HOC는 컴포넌트에 전달된 prop을 가로채고 수정할 수 있다. 이는 래핑된 컴포넌트에 도달하기 전에 데이터를 보강하거나 변환하는 데 유용할 수 있다.
