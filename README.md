@@ -759,3 +759,11 @@ class MyComponent extends React.Component {
 ```
 
 위 예시에서 볼 수 있듯 `this.props` 는 생성자 함수 내부에서만 다르게 동작하고 외부에서는 동일하다.
+
+### 22. lazy function이 named export를 지원하는가?
+
+먼저 `named export`와 `default export`의 차이에 대해서 살펴보자.
+
+**named export**
+
+**default export**
