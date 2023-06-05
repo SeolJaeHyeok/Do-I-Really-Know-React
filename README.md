@@ -681,6 +681,7 @@ React.cloneElement(element, [props], [...children]);
 <img src="https://github.com/sudheerj/reactjs-interview-questions/raw/master/images/phases16.4.png">
 
 ### 19. HOC(Higher Order Component) - [Examples](https://github.com/SeolJaeHyeok/dirkr-examples/tree/main/app/HOC)
+
 고차 컴포넌트는 컴포넌트를 인자로 받아 새로운 컴포넌트를 반환하는 함수다. 기본적으로 React의 컴포지션 특성에서 파생된 패턴이다.
 
 HOC의 주요 목적은 코드 재사용, 관심사 분리를 가능하게 하고 여러 컴포넌트 간에 공통 기능을 공유할 수 있는 방법을 제공하는 것이다. 이를 통해 새로운 프로퍼티를 추가하거나 컴포넌트의 생명 주기를 조작하거나 다른 컴포넌트로 래핑하여 컴포넌트의 동작을 확장하거나 수정할 수 있다.
@@ -693,19 +694,20 @@ HOC는 다음과 같은 다양한 상황에서 유용하다.
 4. 프로퍼티 조작(Props Manipulation): HOC는 컴포넌트에 전달된 prop을 가로채고 수정할 수 있다. 이는 래핑된 컴포넌트에 도달하기 전에 데이터를 보강하거나 변환하는 데 유용할 수 있다.
 
 ### 20. Context - [Examples](https://github.com/SeolJaeHyeok/dirkr-examples/tree/main/app/context)
+
 일반적으로 부모 컴포넌트에서 자식 컴포넌트로 정보를 전달할 때는 프로퍼티를 통해 전달한다. 하지만 중간에 여러 컴포넌트를 거쳐야 하거나 앱의 여러 컴포넌트가 동일한 정보를 필요로 하는 경우 프로퍼티 전달은 장황하고 불편할 수 있다. Context를 사용하면 부모 컴포넌트가 프로퍼티를 통해 명시적으로 전달하지 않고도 그 아래 트리에 있는 모든 컴포넌트가 일부 정보를 사용할 수 있다.
 
 하지만 Context를 사용하기 전 고려해야 하는 사항이 있다.
 
 1. Props를 넘기는 방식으로 시작하기
-  
-   일반적인 경우에는 Props를 수십 개 사용하거나 Props Drilling이 발생할 가능성이 적다. 이런 경우 Props를 명시적으로 전달하는 것이 명확하게 어떤 데이터를 사용하는지를 표현할 수 있다. 
-   
-   따라서 코드를 유지 보수할 때 데이터의 흐름을 더욱 쉽게 파악할 수 있게 된다.  
 
-2. 컴포넌트를 추출해서 JSX를 children으로 전달하기 
-   
-   만약 Props를 전달할 때, 해당 데이터를 사용하지 않고 그저 전달하기만 하는 용도로 사용하는 컴포넌트가 있다면 해당 컴포넌트를 추출할 필요가 있다. 
+   일반적인 경우에는 Props를 수십 개 사용하거나 Props Drilling이 발생할 가능성이 적다. 이런 경우 Props를 명시적으로 전달하는 것이 명확하게 어떤 데이터를 사용하는지를 표현할 수 있다.
+
+   따라서 코드를 유지 보수할 때 데이터의 흐름을 더욱 쉽게 파악할 수 있게 된다.
+
+2. 컴포넌트를 추출해서 JSX를 children으로 전달하기
+
+   만약 Props를 전달할 때, 해당 데이터를 사용하지 않고 그저 전달하기만 하는 용도로 사용하는 컴포넌트가 있다면 해당 컴포넌트를 추출할 필요가 있다.
 
    예를 들어, `<Layout posts={posts} />` 대신, `Layout` 컴포넌트가 `children`을 props로 받아 사용하도록 하여 `<Layout><Posts posts={posts} /></Layout>`를 렌더링할 수 있게 변경할 수 있다.
 
@@ -717,3 +719,43 @@ HOC는 다음과 같은 다양한 상황에서 유용하다.
 2. Current account : 여러 컴포넌트가 현재 로그인한 사용자를 알아야 하는 경우, 해당 상태를 Context에 넣어 관리하게 되면 어느 곳에서나 편리하게 해당 정보를 읽어올 수 있다. 또한 여러 개의 Context를 중첩해서 여러 계정을 동시에 관리할 수도 있다.
 3. Routing : 대부분의 Routing Libarary들은 내부적으로 Context를 사용하여 현재 경로를 유지한다. Context를 사용해 모든 링크가 활성 상태인지 아닌지를 알 수 있다.
 4. Managing state : 많은 상태를 전역으로 관리해야 하고 이를 여러 컴포넌트에서 수정해야 하는 경우 Context를 사용할 수 있다. Context와 함께 Reducer를 사용해서 복잡한 상태를 관리할 수 있다.
+
+### 21. props 인자와 함께 super 생성자를 사용하는 목적이 무엇인가?
+
+자식 클래스 생성자는 `super`가 호출되기 전까지 `this` 참조를 사용할 수 없다. 이는 ES6 하위 클래스에도 동일하게 동작한다.
+
+`props` 인자를 `super()` 호출에 전달하는 이유는 자식 생성자에서 `this.props`를 접근하기 위해서다.
+
+#### Props 전달
+
+```javascript
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    console.log(this.props); // prints { name: 'John', age: 42 }
+  }
+}
+```
+
+#### Props 전달 X
+
+```javascript
+class MyComponent extends React.Component {
+  constructor(props) {
+    super();
+
+    console.log(this.props); // this.props는 접근 불가능 , undefined
+
+    // props 인자는 사용 가능
+    console.log(props); // prints { name: 'John', age: 42 }
+  }
+
+  render() {
+    // 생성자 함수 외부에서는 차이가 없다.
+    console.log(this.props); // prints { name: 'John', age: 42 }
+  }
+}
+```
+
+위 예시에서 볼 수 있듯 `this.props` 는 생성자 함수 내부에서만 다르게 동작하고 외부에서는 동일하다.
