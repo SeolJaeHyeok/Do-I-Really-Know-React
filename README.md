@@ -766,4 +766,12 @@ class MyComponent extends React.Component {
 
 **named export**
 
+한 파일 내에서 여러 변수, 함수, 클래스 등은 export 할 수 있다. 단, import 할 때 export 된 이름과 동일하게 import를 해야만 한다.
+
+만약 다른 이름으로 사용하고 싶다면 `as` 키워드를 사용해서 변경해주면 된다. `*`를 사용하면 해당 파일 내에 있는 모든 export 된 변수, 클래스 등을 한 번에 가져올 수 있다.
+
 **default export**
+
+default로 선언된 모듈은 하나의 파일에서 단 하나의 변수, 클래스, 함수 등만 export할 수 있다. import 할 때는 어떠한 이름으로 선언해도 상관이 없다.
+
+단, `var`, `let`, `const` 키워드로 선언된 변수를 export default 하는 것은 불가능하다.
