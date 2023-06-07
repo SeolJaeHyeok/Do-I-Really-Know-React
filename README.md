@@ -796,3 +796,39 @@ export { SomeComponent as default } from "./MoreComponents.js";
 import React, { lazy } from "react";
 const SomeComponent = lazy(() => import("./IntermediateComponent.js"));
 ```
+
+### 23. Fragment가 무엇인가?
+Fragment를 사용하면 DOM에 노드를 추가하지 않고 자식 엘리먼트들을 그룹화할 수 있다. `<Fragment></Fragment>` 혹은 `<></>`를 사용해야 한다.
+
+```javascript
+function Story({title, description, date}) {
+  return (
+      <Fragment>
+        <h2>{title}</h2>
+        <p>{description}</p>
+        <p>{date}</p>
+      </Fragment>
+    );
+}
+```
+
+또한 `key` prop을 사용해서 리스트를 렌더링할 수도 있다. 물론 일반적으로는 잘 사용하지 않는다.
+```javascript
+function StoryBook() {
+  return stories.map(story =>
+    <Fragment key={ story.id}>
+      <h2>{story.title}</h2>
+      <p>{story.description}</p>
+      <p>{story.date}</p>
+    </Fragment>
+    );
+}
+```
+
+Fragment가 DOM Element보다 선호되는 이유는 다음과 같다.
+
+1. Fragment는 추가 DOM 노드를 생성하지 않기 때문에 조금 더 빠르며 메모리를 덜 사용한다. 단, 매우 크고 깊은 트리에서만 실질적인 이점이 있다.
+
+2. Flexbox 및 CSS Grid와 같은 일부 CSS 메커니즘은 부모-자식 관계가 특수하므로 중간에 div를 추가하면 원하는 레이아웃을 유지하기가 어렵다.
+
+3. DOM 인스펙터는 덜 복잡하다.
