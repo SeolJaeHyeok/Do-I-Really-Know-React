@@ -772,6 +772,27 @@ class MyComponent extends React.Component {
 
 **default export**
 
-default로 선언된 모듈은 하나의 파일에서 단 하나의 변수, 클래스, 함수 등만 export할 수 있다. import 할 때는 어떠한 이름으로 선언해도 상관이 없다.
+default로 선언된 모듈은 하나의 파일에서 단 하나의 변수, 클래스, 함수 등만 export할 수 있다. import 할 때는 어떠한 이름으로 선언해도 상관이 없다. 단, `var`, `let`, `const` 키워드로 선언된 변수를 export default 하는 것은 불가능하다.
 
-단, `var`, `let`, `const` 키워드로 선언된 변수를 export default 하는 것은 불가능하다.
+질문으로 돌아와서 결론부터 말하면 `React.lazy` 함수는 default export만 지원한다. 하지만 named export로 모듈을 가져오는 방법이 있는데 default로 다시 export하는 중간 모듈을 만들면 된다.
+
+이는 트리 셰이킹이 동일하게 발생하고 사용하지 않는 컴포넌트를 다시 가져오지 않도록 보장한다.
+
+```javascript
+// MoreComponents.js
+export const SomeComponent = /* ... */;
+export const UnusedComponent = /* ... */;
+```
+
+그 후 `MoreComponents.js` 컴포넌트를 다시 export 하는 중간 모듈 컴포넌트 `IntermediateComponent.js`을 만들어준다.
+
+```javascript
+export { SomeComponent as default } from "./MoreComponents.js";
+```
+
+이제 `lazy` 함수를 사용해서 컴포넌트를 불러올 수 있다.
+
+```javascript
+import React, { lazy } from "react";
+const SomeComponent = lazy(() => import("./IntermediateComponent.js"));
+```
