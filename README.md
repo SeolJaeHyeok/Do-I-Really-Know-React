@@ -833,3 +833,23 @@ Fragment가 DOM Element(Ex.div) 보다 선호되는 이유는 다음과 같다.
 
 3. DOM 인스펙터는 덜 복잡하다.
 
+### 24. React에서 말하는 portals란?
+포털은 부모 컴포넌트의 DOM 계층 구조 외부에 존재하는 DOM 노드에 자식을 렌더링하는 권장 방법이다.
+
+```javascript
+import { createPortal } from 'react-dom';
+
+// ...
+
+<div>
+  <p>This child is placed in the parent div.</p>
+  {createPortal(
+    <p>This child is placed in the document body.</p>,
+    document.body
+  )}
+</div>
+```
+첫 번째 인수는 Element, 문자열 또는 Fragment와 같은 렌더링 가능한 React Element이고 두 번째 인수는 DOM Element다.
+
+Portal은 DOM 노드의 물리적 배치만 변경한다. 즉, 다른 모든 면에서 Portal에 렌더링하는 JSX는 이를 렌더링 하는 React 컴포넌트의 자식 노드 역할을 한다. 예를 들어, 자식은 부모 트리가 제공하는 context에 접근할 수 있고, 이벤트는 React 트리에 따라 자식에서 부모로 버블링 된다.
+
