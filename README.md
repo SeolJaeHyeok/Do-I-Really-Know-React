@@ -1,14 +1,8 @@
 # React Deep Dive
+### 2023.05.11 ~
+#### [실습 Repo](https://github.com/SeolJaeHyeok/dirkr-examples)
 
-## 목적
-
-React Deep Dive
-
-## 2023.05.11 ~
-
----
-
-## Core React
+# Core React
 
 ### 1. JSX란 무엇인가?
 
