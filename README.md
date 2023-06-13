@@ -1,14 +1,8 @@
 # React Deep Dive
+### 2023.05.11 ~
+#### [실습 Repo](https://github.com/SeolJaeHyeok/dirkr-examples)
 
-## 목적
-
-React Deep Dive
-
-## 2023.05.11 ~
-
----
-
-## Core React
+# Core React
 
 ### 1. JSX란 무엇인가?
 
@@ -833,7 +827,7 @@ Fragment가 DOM Element(Ex.div) 보다 선호되는 이유는 다음과 같다.
 
 3. DOM 인스펙터는 덜 복잡하다.
 
-### 24. React에서 말하는 portals란?
+### 24. React에서 말하는 portals란? -[Examples](https://github.com/SeolJaeHyeok/dirkr-examples/tree/main/app/react-portal)
 포털은 부모 컴포넌트의 DOM 계층 구조 외부에 존재하는 DOM 노드에 자식을 렌더링하는 권장 방법이다.
 
 ```javascript
