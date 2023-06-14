@@ -847,6 +847,9 @@ import { createPortal } from 'react-dom';
 
 Portal은 DOM 노드의 물리적 배치만 변경한다. 즉, 다른 모든 면에서 Portal에 렌더링하는 JSX는 이를 렌더링 하는 React 컴포넌트의 자식 노드 역할을 한다. 예를 들어, 자식은 부모 트리가 제공하는 context에 접근할 수 있고, 이벤트는 React 트리에 따라 자식에서 부모로 버블링 된다.
 
+<img src="./images/portal/noPortal.png" width=350 height=200 alt="포탈 사용 X"/>
+<img src="./images/portal/portal.png" width=350 height=200 alt="포탈 사용"/>
+
 ### 25. Stateless Component, Stateful Component
 Stateless Component는 상태를 하나고 가지고 있지 않은 다시 말해, 상태와 무관한 컴포넌트를 의미한다. 
 
@@ -927,4 +930,7 @@ const App = () => {
 ```
 
 결론부터 말하면 자체 상태가 없지만 props로 값을 받는 컴포넌트는 Stateless Component로 간주된다. 이러한 컴포넌트는 순전히 Props로 받는 데이터를 기반으로 UI를 렌더링 하는 역할만을 주로 담당한다.
+
+### 26. Error Boundaries
+Error Boundaries는 자식 컴포넌트 트리 어느 곳에서나 Javascript 오류를 기록하고, 오류가 발생한 컴포넌트 트리 대신 Fallback UI를 표시하는 컴포넌트다.
 
