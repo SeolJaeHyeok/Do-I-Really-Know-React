@@ -934,3 +934,38 @@ const App = () => {
 ### 26. Error Boundaries
 Error Boundaries는 자식 컴포넌트 트리 어느 곳에서나 Javascript 오류를 기록하고, 오류가 발생한 컴포넌트 트리 대신 Fallback UI를 표시하는 컴포넌트다.
 
+클래스 컴포넌트는 `componentDidCatch(error, info)` 또는 `static getDerivedStateFromError()` 함수를 정의하면 Error Boundary가 된다.
+
+```javascript
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  componentDidCatch(error, info) {
+    logErrorToMyService(error, info);
+  }
+
+  static getDerivedStateFromError(error) {
+    // 상태를 업데이트하여 다음 렌더링에 Fallback UI가 표시되도록 한다.
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>{"Something went wrong."}</h1>;
+    }
+    return this.props.children;
+  }
+}
+```
+
+이제 Error Boundary 컴포넌트는 일반 컴포넌트처럼 사용할 수 있다.
+
+```javascript
+<ErrorBoundary>
+  <MyWidget />
+</ErrorBoundary>
+```
