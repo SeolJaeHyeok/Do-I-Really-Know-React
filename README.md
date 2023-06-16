@@ -969,3 +969,19 @@ class ErrorBoundary extends React.Component {
   <MyWidget />
 </ErrorBoundary>
 ```
+
+Error Boundary가 포착할 수 있는 오류는 다음과 같다.
+
+1. 런타임 오류: 이러한 오류는 렌더링 중, 수명 주기 메서드 또는 하위 구성 요소의 생성자에서 발생한다. Error Boundary에서 포착하는 가장 일반적인 유형의 오류다. 런타임 오류의 예는 다음과 같다.
+
+   - 렌더링 방법 내에서 예외를 throw
+   - 존재하지 않는 함수나 속성을 호출
+   - 정의되지 않은 변수에 접근하기
+   - Promise 또는 비동기 코드 처리 실패 - 비동기 코드 자체의 오류를 캐치하는 것이 아님.
+
+자식 구성 요소 내에서 런타임 오류가 발생하면 구성 요소 트리에서 가장 가까운 오류 경계 구성 요소가 오류를 캡처하고 전체 애플리케이션을 충돌시키는 대신 Fallback UI를 표시합니다.
+
+
+2. 렌더링 중 오류: 이러한 오류는 렌더링 단계 자체에서 발생다. 이는 render() 메서드의 결과로 null 또는 undefined를 반환하는 자식 구성 요소 또는 componentDidMount() 또는 componentDidUpdate()와 같은 수명 주기 메서드 내에서 예외를 throw하여 발생할 수 있다. React는 이러한 오류를 렌더링 중에 발생한 것처럼 처리하고 Error Boundary에 의해 포착된다.
+
+Error Boundary는 이벤트 핸들러의 오류, 비동기 코드(예: setTimeout, fetch) 또는 Error Boundary 자체에서 발생한 오류를 포착하지 않는다는 점에 유의해야 한다. Error Boundary는 하위 구성 요소 트리의 오류만 포착한다.
