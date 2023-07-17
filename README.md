@@ -931,7 +931,7 @@ const App = () => {
 
 결론부터 말하면 자체 상태가 없지만 props로 값을 받는 컴포넌트는 Stateless Component로 간주된다. 이러한 컴포넌트는 순전히 Props로 받는 데이터를 기반으로 UI를 렌더링 하는 역할만을 주로 담당한다.
 
-### 26. Error Boundaries
+### 26. Error Boundaries - [Examples](https://github.com/SeolJaeHyeok/dirkr-examples/tree/main/app/error-boundary)
 Error Boundaries는 자식 컴포넌트 트리 어느 곳에서나 Javascript 오류를 기록하고, 오류가 발생한 컴포넌트 트리 대신 Fallback UI를 표시하는 컴포넌트다.
 
 클래스 컴포넌트는 `componentDidCatch(error, info)` 또는 `static getDerivedStateFromError()` 함수를 정의하면 Error Boundary가 된다.
