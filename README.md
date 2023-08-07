@@ -985,5 +985,3 @@ Error Boundary가 포착할 수 있는 오류는 다음과 같다.
 2. 렌더링 중 오류: 이러한 오류는 렌더링 단계 자체에서 발생다. 이는 render() 메서드의 결과로 null 또는 undefined를 반환하는 자식 구성 요소 또는 componentDidMount() 또는 componentDidUpdate()와 같은 수명 주기 메서드 내에서 예외를 throw하여 발생할 수 있다. React는 이러한 오류를 렌더링 중에 발생한 것처럼 처리하고 Error Boundary에 의해 포착된다.
 
 Error Boundary는 이벤트 핸들러의 오류, 비동기 코드(예: setTimeout, fetch) 또는 Error Boundary 자체에서 발생한 오류를 포착하지 않는다는 점에 유의해야 한다. Error Boundary는 하위 구성 요소 트리의 오류만 포착한다
-
-// test
