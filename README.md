@@ -1,6 +1,42 @@
 # React Deep Dive
+
 ### 2023.05.11 ~
+
 #### [실습 Repo](https://github.com/SeolJaeHyeok/dirkr-examples)
+
+---
+
+# 목차
+
+- Core React
+  - [JSX란 무엇인가?](#1-jsx란-무엇인가)
+  - [Element와 Component의 차이는 무엇인가](#2-element와-component의-차이는-무엇인가)
+  - [순수 컴포넌트가 무엇인가?](#3-순수-컴포넌트가-무엇인가)
+  - [State란 무엇인가?](#4-state란-무엇인가)
+  - [Props란 무엇인가?](#5-props란-무엇인가)
+  - [State와 Props의 차이](#6-state와-props의-차이)
+  - [State Update](#7-state-update)
+  - [HTML과 React 사이의 이벤트를 다루는 방법의 차이](#8-html과-react-사이의-이벤트를-다루는-방법의-차이)
+  - [JSX 콜백에서 메서드 또는 이벤트 핸들러를 바인딩하는 방법](#9-jsx-콜백에서-메서드-또는-이벤트-핸들러를-바인딩하는-방법)
+  - [React의 synthetic events](#10-react의-synthetic-events)
+  - [React key props](#11-react-key-props)
+  - [ref](#12-ref)
+  - [forward refs란?](#13-forward-refs란)
+  - [Virtual DOM은 어떻게 동작하는가?](#14-virtual-dom은-어떻게-동작하는가)
+  - [Fiber 객체는 무엇인가?](#15-fiber-객체는-무엇인가)
+  - [controlled component and uncontrolled component](#16-controlled-component-and-uncontrolled-component---examples)
+  - [createElement와 cloneElement의 차이점은 무엇인가?](#17-createelement와-cloneelement의-차이점은-무엇인가---examples)
+  - [Component Lifecycle이란?](#18-component-lifecycle이란)
+  - [HOC(Higher Order Component)](#19-hochigher-order-component---examples)
+  - [Context](#20-context---examples)
+  - [props 인자와 함께 super 생성자를 사용하는 목적이 무엇인가?](#21-props-인자와-함께-super-생성자를-사용하는-목적이-무엇인가)
+  - [lazy function이 named export를 지원하는가?](#22-lazy-function이-named-export를-지원하는가)
+  - [Fragment가 무엇인가?](#23-fragment가-무엇인가)
+  - [React에서 말하는 portals란?](#24-react에서-말하는-portals란--examples)
+  - [Stateless Component, Stateful Component](#25-stateless-component-stateful-component)
+  - [Error Boundaries](#26-error-boundaries---examples)
+
+---
 
 # Core React
 
@@ -792,30 +828,32 @@ const SomeComponent = lazy(() => import("./IntermediateComponent.js"));
 ```
 
 ### 23. Fragment가 무엇인가?
+
 Fragment를 사용하면 DOM에 노드를 추가하지 않고 자식 엘리먼트들을 그룹화할 수 있다. `<Fragment></Fragment>` 혹은 `<></>`를 사용해야 한다.
 
 ```javascript
-function Story({title, description, date}) {
+function Story({ title, description, date }) {
   return (
-      <Fragment>
-        <h2>{title}</h2>
-        <p>{description}</p>
-        <p>{date}</p>
-      </Fragment>
-    );
+    <Fragment>
+      <h2>{title}</h2>
+      <p>{description}</p>
+      <p>{date}</p>
+    </Fragment>
+  );
 }
 ```
 
 또한 `key` prop을 사용해서 리스트를 렌더링할 수도 있다. 물론 일반적으로는 잘 사용하지 않는다.
+
 ```javascript
 function StoryBook() {
-  return stories.map(story =>
-    <Fragment key={ story.id}>
+  return stories.map((story) => (
+    <Fragment key={story.id}>
       <h2>{story.title}</h2>
       <p>{story.description}</p>
       <p>{story.date}</p>
     </Fragment>
-    );
+  ));
 }
 ```
 
@@ -828,10 +866,11 @@ Fragment가 DOM Element(Ex.div) 보다 선호되는 이유는 다음과 같다.
 3. DOM 인스펙터는 덜 복잡하다.
 
 ### 24. React에서 말하는 portals란? -[Examples](https://github.com/SeolJaeHyeok/dirkr-examples/tree/main/app/react-portal)
+
 포털은 부모 컴포넌트의 DOM 계층 구조 외부에 존재하는 DOM 노드에 자식을 렌더링하는 권장 방법이다.
 
 ```javascript
-import { createPortal } from 'react-dom';
+import { createPortal } from "react-dom";
 
 // ...
 
@@ -841,8 +880,9 @@ import { createPortal } from 'react-dom';
     <p>This child is placed in the document body.</p>,
     document.body
   )}
-</div>
+</div>;
 ```
+
 첫 번째 인수는 Element, 문자열 또는 Fragment와 같은 렌더링 가능한 React Element이고 두 번째 인수는 DOM Element다.
 
 Portal은 DOM 노드의 물리적 배치만 변경한다. 즉, 다른 모든 면에서 Portal에 렌더링하는 JSX는 이를 렌더링 하는 React 컴포넌트의 자식 노드 역할을 한다. 예를 들어, 자식은 부모 트리가 제공하는 context에 접근할 수 있고, 이벤트는 React 트리에 따라 자식에서 부모로 버블링 된다.
@@ -851,37 +891,38 @@ Portal은 DOM 노드의 물리적 배치만 변경한다. 즉, 다른 모든 면
 <img src="./images/portal/portal.png" width=350 height=200 alt="포탈 사용"/>
 
 ### 25. Stateless Component, Stateful Component
-Stateless Component는 상태를 하나고 가지고 있지 않은 다시 말해, 상태와 무관한 컴포넌트를 의미한다. 
+
+Stateless Component는 상태를 하나고 가지고 있지 않은 다시 말해, 상태와 무관한 컴포넌트를 의미한다.
 
 Stateful Component는 상태에 따라 컴포넌트의 동작이 달라지는 컴포넌트를 의미한다. Stateful Component는 Hook을 사용하는 함수 컴포넌트 혹은 상태를 가진 클래스 컴포넌트다.
 
 예를 들어, 버튼을 클릭함에 따라 숫자가 증가하는 컴포넌트는 Stateful Component가 된다.
 
 ```javascript
-import React, {useState} from 'react';
+import React, { useState } from "react";
 
 const StatefulComponent = () => {
   const [count, setCount] = useState(0);
-   
+
   const handleIncrement = () => {
-     setCount(count+1);
-  }
+    setCount(count + 1);
+  };
 
   return (
     <>
       <button onClick={handleIncrement}>Increment</button>
       <span>Counter: {count}</span>
     </>
-  )
-}
+  );
+};
 
 const App = (props) => {
-   return (
+  return (
     <>
       <StatefulComponent />
     </>
-   )
-}
+  );
+};
 ```
 
 반면, 자체적인 상태를 가지고 있지 않는 컴포넌트는 Stateless Component가 된다.
@@ -890,20 +931,22 @@ const App = (props) => {
 import React from "react";
 
 const StatelessComponent = () => {
-  return <h1>Stateless Component</h1>
-}
+  return <h1>Stateless Component</h1>;
+};
 
 const App = () => {
-  return <div>
-    <StatelessComponent />
-  </div>
-}
+  return (
+    <div>
+      <StatelessComponent />
+    </div>
+  );
+};
 ```
 
 그렇다면 아래와 같이 Props로 부모 컴포넌트의 상태를 전달 받은 자식 컴포넌트는 어떤 컴포넌트일까?
 
 ```javascript
-import React, { useState } from "react"
+import React, { useState } from "react";
 
 const WhatIsThisComponent = ({ count, handleIncrement }) => {
   return (
@@ -911,27 +954,28 @@ const WhatIsThisComponent = ({ count, handleIncrement }) => {
       <button onClick={handleIncrement}>Increment</button>
       <span>Counter: {count}</span>
     </>
-  )
-}
+  );
+};
 
 const App = () => {
   const [count, setCount] = useState(0);
 
   const handleIncrement = () => {
-    setCount(prev => prev + 1);
-  }
+    setCount((prev) => prev + 1);
+  };
 
-  return ( 
+  return (
     <>
       <WhatIsThisComponent count={count} handleIncrement={handleIncrement} />
     </>
-  )
-}
+  );
+};
 ```
 
 결론부터 말하면 자체 상태가 없지만 props로 값을 받는 컴포넌트는 Stateless Component로 간주된다. 이러한 컴포넌트는 순전히 Props로 받는 데이터를 기반으로 UI를 렌더링 하는 역할만을 주로 담당한다.
 
 ### 26. Error Boundaries - [Examples](https://github.com/SeolJaeHyeok/dirkr-examples/tree/main/app/error-boundary)
+
 Error Boundaries는 자식 컴포넌트 트리 어느 곳에서나 Javascript 오류를 기록하고, 오류가 발생한 컴포넌트 트리 대신 Fallback UI를 표시하는 컴포넌트다.
 
 클래스 컴포넌트는 `componentDidCatch(error, info)` 또는 `static getDerivedStateFromError()` 함수를 정의하면 Error Boundary가 된다.
@@ -981,12 +1025,164 @@ Error Boundary가 포착할 수 있는 오류는 다음과 같다.
 
 자식 구성 요소 내에서 런타임 오류가 발생하면 구성 요소 트리에서 가장 가까운 오류 경계 구성 요소가 오류를 캡처하고 전체 애플리케이션을 충돌시키는 대신 Fallback UI를 표시합니다.
 
-
 2. 렌더링 중 오류: 이러한 오류는 렌더링 단계 자체에서 발생다. 이는 render() 메서드의 결과로 null 또는 undefined를 반환하는 자식 구성 요소 또는 componentDidMount() 또는 componentDidUpdate()와 같은 수명 주기 메서드 내에서 예외를 throw하여 발생할 수 있다. React는 이러한 오류를 렌더링 중에 발생한 것처럼 처리하고 Error Boundary에 의해 포착된다.
 
 Error Boundary는 이벤트 핸들러의 오류, 비동기 코드(예: setTimeout, fetch) 또는 Error Boundary 자체에서 발생한 오류를 포착하지 않는다는 점에 유의해야 한다. Error Boundary는 하위 구성 요소 트리의 오류만 포착한다
 
-### 27. react-dom
+---
 
+# Hooks
 
+### 1. useState
 
+Class형 컴포넌트의 state는 객체로 제한되는 반면, useState의 경우 모든 유형의 값을 저장할 수 있습니다.
+여기에는 문자열, 숫자, 부울과 같은 원시형 데이터 타입뿐만 아니라 배열, 객체, 함수, 클래스의 인스터스와 같은 복잡한 데이터 타입도 포함됩니다. 다시 말해, 자바스크립트 변수에 저장할 수 있는 모든 것들이 useState 안에서 상태로 관리할 수 있습니다.
+
+useState에서 초기값을 설정할 때, 함수를 사용하여 느리게 초기화([lazily initialize](https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52/))할 수도 있는데 `useState(() => 비싼연산())`과 같이 비싼 계산의 결과를 초기화할 때 유용하게 사용될 수 있습니다.
+
+초기 값은 초기 렌더링에만 할당됩니다. 함수의 경우 초기 렌더링에서만 실행됩니다. 이후 렌더링(컴포넌트 또는 상위 컴포넌트의 상태 변경으로 인해)에서는 useState Hook의 인수가 무시되고 현재 값이 검색됩니다.
+
+예를 들어, 컴포넌트의 props로 초기값을 설정하고 props가 변경됨에 따라 상태를 업데이트를 하려는 경우 `useState`의 초기값을 설정하는 것만으로는 props의 변경사항을 추적할 수 없기 때문에 이를 해결하기 위해서는 [다른 방법](https://stackoverflow.com/questions/54625831/how-to-sync-props-to-state-using-react-hooks-setstate)을 사용해야 합니다. props의 변경 사항을 useState가 추적하지 못하는 이유는 초기값으로 들어가는 인자가 오직 초기 렌더링에만 할당되기 때문입니다.
+
+```javascript
+"use client";
+
+import UseStateTestComponent from "@/components/use-state-component";
+import { useEffect, useState } from "react";
+
+export default function page() {
+  const [state, setState] = useState(0);
+
+  console.log("페이지 렌더링", state);
+
+  useEffect(() => {
+    setState((prev) => prev + 1);
+    console.log("effect", state);
+    setState((prev) => prev + 1);
+
+    console.log("effect", state);
+    setState((prev) => prev + 1);
+
+    console.log("effect", state);
+  }, []);
+
+  return (
+    <div>
+      <UseStateTestComponent state={state} />
+      <button onClick={() => setState((prev) => prev + 1)}>클릭</button>
+    </div>
+  );
+}
+```
+
+```javascript
+import { useState } from "react";
+
+export default function UseStateTestComponent(props: { state: number }) {
+  const [state, setState] = useState(props);
+
+  console.log("컴포넌트 렌더링", state);
+  return <div>UseStateTestComponent</div>;
+}
+```
+
+<img src="./images/use-state-example-1.png" />
+
+useState로 객체를 다룰 때는 주의해야하는 두가지 사항이 있습니다.
+
+1. 불변성
+2. useState의 setter는 Class 컴포넌트의 `this.setState`와 달리 객체를 병합하지 않는다.
+
+React는 내부적으로 `Object.is()`를 통해 비교를 수행하기 때문에 현재 값과 같은 값이라면 리렌더를 유발하지 않습니다.
+
+```javascript
+const Message = () => {
+  const [messageObj, setMessage] = useState({ message: "" });
+
+  return (
+    <div>
+      <input
+        type='text'
+        value={messageObj.message}
+        placeholder='Enter a message'
+        onChange={(e) => {
+          messageObj.message = e.target.value; // 같은 객체 내부의 프로퍼티 직접 변경
+          setMessage(messageObj); // 동작하지 않는다. 따라서 리렌더링이 발생하지 않는다.
+        }}
+      />
+      <p>
+        <strong>{messageObj.message}</strong>
+      </p>
+    </div>
+  );
+};
+```
+
+위와 같이 불변성을 지켜주지 않은 채 상태를 변경하게 되면 올바르게 동작하지 않게 됩니다.
+
+```javascript
+const Message = () => {
+  const [messageObj, setMessage] = useState({ message: "", id: 1 });
+
+  return (
+    <div>
+      <input
+        type='text'
+        value={messageObj.message}
+        placeholder='Enter a message'
+        onChange={(e) => {
+          const newMessageObj = { message: e.target.value };
+          setMessage(newMessageObj);
+        }}
+      />
+      <p>
+        <strong>
+          {messageObj.id} : {messageObj.message}
+        </strong>
+      </p>
+    </div>
+  );
+};
+```
+
+또한 useState의 setter 함수는 Class 컴포넌트의 `this.setState()`와 달리 [객체를 병합](https://legacy.reactjs.org/docs/state-and-lifecycle.html#state-updates-are-merged)하지 않습니다. 위 예시의 경우 `onChange` 핸들러에서 상태를 변경시켜 줄 때 기존의 초기값으로 할당되었던 `id` 프로퍼티는 병합되지 않고 없어지게 됩니다.
+
+기존에 존재하던 프로퍼티를 유지하기 위해서는 setter의 콜백을 통해 이전 상태를 가져와서 새롭게 복사하여 할당해주어야 합니다.
+
+```javascript
+onChange={e => {
+  const value = e.target.value;
+  setMessage(prevState => {
+    // 이전 값을 복사하여 새로운 객체를 생성
+    return { ...prevState, message: value }
+  });
+}}
+
+OR
+
+onChange={e => {
+  const val = e.target.value;
+  setMessage(prevState => {
+    return Object.assign({}, prevState, { message: val });
+  });
+}}
+```
+
+useState가 수행되는 일련의 과정을 나열하면 아래와 같습니다.
+
+1. React는 Hook의 목록과 현재 Hook을 추적하는 변수를 초기화합니다.
+2. React가 컴포넌트를 처음 호출합니다.
+3. React는 useState에 대한 호출을 찾고, (초기 상태를 가진) 새 Hook 객체를 생성하고, 현재 Hook 변수가 이 객체를 가리키도록 변경하고, 객체를 Hooks 목록에 추가하고, 초기 상태와 함께 배열과 이를 업데이트하는 함수를 반환합니다.
+4. React는 useState에 대한 또 다른 호출을 찾아서 이전 단계의 동작을 반복하고, 새 Hook 객체를 저장하고 현재 Hook 변수를 변경합니다.
+5. 컴포넌트 상태가 변경됩니다.
+6. React는 상태 업데이트 작업(useState가 반환한 함수에 의해 수행됨)을 처리할 큐로 보냅니다.
+7. React가 컴포넌트를 다시 렌더링해야 한다고 판단합니다.
+8. React가 현재 Hook 변수를 재설정하고 컴포넌트를 호출합니다.
+9. React는 useState에 대한 호출을 찾지만 이번에는 Hook 목록의 첫 번째 위치에 이미 Hook이 있기 때문에 현재 Hook 변수를 변경하고 현재 상태의 배열과 이를 업데이트하는 함수를 반환하기만 합니다.
+10. React는 useState에 대한 또 다른 호출을 찾고 두 번째 위치에 Hook이 존재하기 때문에 다시 한번 현재 Hook 변수를 변경하고 현재 상태의 배열과 이를 업데이트하는 함수를 반환합니다.
+
+위 과정을 코드로 보고 싶으면 [ReactFiberHooks](https://github.com/facebook/react/blob/fd557d453d37eab29eca18f0507750ab2093669d/packages/react-reconciler/src/ReactFiberHooks.js) 클래스를 참조하여 내부적으로 어떻게 동작하는지 살펴볼 수 있습니다.
+
+#### 참고
+
+- https://blog.logrocket.com/guide-usestate-react/
