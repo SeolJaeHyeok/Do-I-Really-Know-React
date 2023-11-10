@@ -206,7 +206,7 @@ State:
 - state는 컴포넌트 내의 내부 데이터 저장 메커니즘이다.
 - 컴포넌트의 lifecycle 동안 시간이 지남에 따라 변경될 수 있는 정보를 나타낸다.
 - state는 컴포넌트 자체에서 소유하고 제어한다.
-- 클래스 컴포넌트의 생성자에서 또는 기능적 컴포넌트의 useState 후크를 사용하여 상태를 초기화할 수 있다.
+- 클래스 컴포넌트의 생성자에서 또는 기능적 컴포넌트의 useState를 사용하여 상태를 초기화할 수 있다.
 - state는 setState 메서드(클래스 컴포넌트) 또는 업데이트 기능(funtinoal 컴포넌트)을 사용하여 소유한 컴포넌트 내에서만 수정할 수 있다.
 - state가 변경되면 React는 state 업데이트의 영향을 받는 컴포넌트 및 해당 하위 컴포넌트의 다시 렌더링을 자동으로 트리거한다.
 
@@ -985,3 +985,8 @@ Error Boundary가 포착할 수 있는 오류는 다음과 같다.
 2. 렌더링 중 오류: 이러한 오류는 렌더링 단계 자체에서 발생다. 이는 render() 메서드의 결과로 null 또는 undefined를 반환하는 자식 구성 요소 또는 componentDidMount() 또는 componentDidUpdate()와 같은 수명 주기 메서드 내에서 예외를 throw하여 발생할 수 있다. React는 이러한 오류를 렌더링 중에 발생한 것처럼 처리하고 Error Boundary에 의해 포착된다.
 
 Error Boundary는 이벤트 핸들러의 오류, 비동기 코드(예: setTimeout, fetch) 또는 Error Boundary 자체에서 발생한 오류를 포착하지 않는다는 점에 유의해야 한다. Error Boundary는 하위 구성 요소 트리의 오류만 포착한다
+
+### 27. react-dom
+
+
+
